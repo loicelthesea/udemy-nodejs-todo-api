@@ -10,13 +10,15 @@ app.use(express.urlencoded({extended: true}));
 
 // POST TODOS
 app.post('/todos', (req, res) => {
-  console.log(req.body);
   const todo = new Todo({
     text: req.body.text,
   });
-  todo.save().then(doc => res.send(doc), err => res.send(err));
+
+  todo.save().then(doc => res.send(doc), err => res.status(400).send(err));
 });
 
 //GET TODOS
 
 app.listen(3000, () => console.log('Todo API is up on port 3000'));
+
+module.exports = {app};
