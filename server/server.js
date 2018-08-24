@@ -12,16 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 const send404 = res => res.status(404).send({});
-const send400 = (res, err) => res.status(400).send(err);
-
-// POST A TODO
-app.post('/todos', (req, res) => {
-  const todo = new Todo({
-    text: req.body.text,
-  });
-
-  todo.save().then(doc => res.send(doc), err => res.status(400).send(err));
-});
+const send400 = res => res.status(400).send({});
 
 //GET TODOS
 app.get('/todos', (req, res) => {
@@ -40,7 +31,30 @@ app.get('/todos/:id', (req, res) => {
   } else {
     Todo.findById(id).then(
       todo => (todo ? res.send({todo}) : send404(res)),
-      error => send404(res),
+      error => send400(res),
+    );
+  }
+});
+
+// POST A TODO
+app.post('/todos', (req, res) => {
+  const todo = new Todo({
+    text: req.body.text,
+  });
+
+  todo.save().then(doc => res.send(doc), err => res.status(400).send(err));
+});
+
+// DELETE A TODO BY ID
+app.delete('/todos/:id', (req, res) => {
+  const {id} = req.params;
+
+  if (!ObjectID.isValid(id)) {
+    send404(res);
+  } else {
+    Todo.findByIdAndRemove(id).then(
+      todo => (todo ? res.send({todo}) : send404(res)),
+      error => send400(res),
     );
   }
 });
