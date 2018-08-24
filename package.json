@@ -14,11 +14,14 @@
     "nodemon": "^1.10.2",
     "supertest": "^2.0.0"
   },
+  "engines": {
+    "node": "8.11.x"
+  },
   "scripts": {
     "start": "node server/server.js",
     "devil": "nodemon server/server.js",
     "test": "mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec \"npm test\""
+    "test-devil": "nodemon --exec \"npm test\""
   },
   "author": "",
   "license": "ISC"
