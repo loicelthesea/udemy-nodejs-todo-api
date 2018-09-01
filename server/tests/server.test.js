@@ -13,12 +13,16 @@ const todos = [
   {
     text: 'TEST TODO 2',
     _id: new ObjectID(),
+    completed: true,
+    completedAt: 7357,
   },
   {
     text: 'TEST TODO 3',
     _id: new ObjectID(),
   },
 ];
+
+todos.getId = index => todos[index]._id.toHexString();
 
 beforeEach(done => {
   Todo.remove({})
@@ -82,7 +86,7 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
-  const id = todos[0]._id.toHexString();
+  const id = todos.getId(0);
 
   it('should get a todo', done => {
     request(app)
@@ -109,7 +113,7 @@ describe('GET /todos/:id', () => {
 });
 
 describe('DELETE /todos/:id', () => {
-  const id = todos[0]._id.toHexString();
+  const id = todos.getId(0);
 
   it('should remove a todo', done => {
     request(app)
@@ -139,6 +143,38 @@ describe('DELETE /todos/:id', () => {
     request(app)
       .delete('/todos/ANYTHING')
       .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH /todos/:id', () => {
+  it('should update a todo', done => {
+    const id = todos[0]._id.toHexString();
+    const text = 'TEST TODO 1 COMPLETED';
+
+    request(app)
+      .patch('/todos/' + id)
+      .send({completed: true, text})
+      .expect(200)
+      .expect(res => expect(res.body.todo._id).toBe(id))
+      .expect(res => expect(res.body.todo.completed).toBe(true))
+      .expect(res => expect(res.body.todo.completedAt).toBeA('number'))
+      .expect(res => expect(res.body.todo.text).toBe(text))
+      .end(done);
+  });
+
+  it('should update a todo & clearing completedAt if completed set to false', done => {
+    const id = todos[1]._id.toHexString();
+    const text = 'TEST TODO 2 COMPLETED';
+
+    request(app)
+      .patch('/todos/' + id)
+      .send({completed: false, text})
+      .expect(200)
+      .expect(res => expect(res.body.todo._id).toBe(id))
+      .expect(res => expect(res.body.todo.completed).toBe(false))
+      .expect(res => expect(res.body.todo.completedAt).toBe(null))
+      .expect(res => expect(res.body.todo.text).toBe(text))
       .end(done);
   });
 });
