@@ -115,7 +115,6 @@ describe('DELETE /todos/:id', () => {
     request(app)
       .delete('/todos/' + id)
       .expect(200)
-      .expect(res => expect(res.body.todo.text).toBe(todos[0].text))
       .expect(res => expect(res.body.todo._id).toBe(id))
       .end((err, res) => {
         if (err) return done(err);
