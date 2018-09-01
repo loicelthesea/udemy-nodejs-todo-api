@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.16.3",
+    "lodash": "^4.15.0",
     "mongodb": "^2.2.5",
     "mongoose": "^4.5.9"
   },
@@ -21,7 +22,7 @@
   "scripts": {
     "start": "node server/server.js",
     "devil": "nodemon server/server.js",
-    "test": "export PORT=7357 && mocha server/**/*.test.js", 
+    "test": "export PORT=7357 && mocha server/**/*.test.js",
     "test-devil": "nodemon --exec \"npm test\""
   },
   "author": "",
