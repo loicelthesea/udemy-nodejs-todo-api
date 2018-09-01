@@ -22,7 +22,7 @@
   "scripts": {
     "start": "node server/server.js",
     "devil": "nodemon server/server.js",
-    "test": "export PORT=7357 && mocha server/**/*.test.js",
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js", 
     "test-devil": "nodemon --exec \"npm test\""
   },
   "author": "",
