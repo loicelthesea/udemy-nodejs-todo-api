@@ -3,9 +3,10 @@ require('./config');
 const express = require('express');
 const {ObjectID} = require('mongodb');
 
-const mongoose = require('./db/mongoose');
+const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,8 +18,9 @@ const log = fn => (...args) => {
   console.log(...args);
   fn(...args);
 };
-const send404 = (res, err) => res.status(404).send(err);
 const send400 = log((res, err) => res.status(400).send(err));
+const send401 = log((res, err) => res.status(401).send());
+const send404 = log((res, err) => res.status(404).send());
 
 //GET TODOS
 app.get('/todos', (req, res) => {
@@ -43,7 +45,10 @@ app.get('/todos/:id', (req, res) => {
 app.post('/todos', (req, res) => {
   const {text} = req.body;
   const todo = new Todo({text});
-  todo.save().then(doc => res.send(doc), err => send400(res, err));
+  todo
+    .save()
+    .then(doc => res.send(doc))
+    .catch(err => send400(res, err));
 });
 
 // DELETE A TODO BY ID
@@ -94,10 +99,12 @@ app.post('/users', (req, res) => {
       res.header('x-auth', token);
       res.send(user);
     })
-    .catch(err => {
-      console.log(err);
-      send400(res, err);
-    });
+    .catch(err => send400(res, err));
+});
+
+// GET USER ME
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 // Start listening
