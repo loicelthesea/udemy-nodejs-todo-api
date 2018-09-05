@@ -177,4 +177,18 @@ describe('PATCH /todos/:id', () => {
       .expect(res => expect(res.body.todo.text).toBe(text))
       .end(done);
   });
+
+  it('should not update a todo with other values than text or completed', done => {
+    const id = todos[1]._id.toHexString();
+    const text = 'TEST TODO 2 COMPLETED';
+
+    request(app)
+      .patch('/todos/' + id)
+      .send({text, completedAt: 111, anything: 'anything'})
+      .expect(200)
+      .expect(res => expect(res.body.todo._id).toBe(id))
+      .expect(res => expect(res.body.todo.completedAt).toNotBe(111))
+      .expect(res => expect(res.body.todo.anything).toBe(undefined))
+      .end(done);
+  });
 });
