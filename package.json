@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^7.1.9",
     "mongodb": "^2.2.5",

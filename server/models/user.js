@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -44,6 +45,17 @@ UserSchema.methods.toJSON = function() {
   const {_id, email} = this.toObject();
   return {_id, email};
 };
+
+UserSchema.pre('save', function(next) {
+  const user = this;
+  const password = user.password;
+
+  if (user.isModified('password')) {
+    const hash = bcrypt.hashSync(password, 8);
+    user.password = hash;
+  }
+  next();
+});
 
 UserSchema.statics.findByToken = function(token) {
   const User = this;
