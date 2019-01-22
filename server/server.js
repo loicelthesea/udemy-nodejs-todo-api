@@ -15,12 +15,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 const log = fn => (...args) => {
-  console.log(...args);
+  // console.log(...args);
   fn(...args);
 };
-const send400 = log((res, err) => res.status(400).send(err));
-const send401 = log((res, err) => res.status(401).send());
-const send404 = log((res, err) => res.status(404).send());
+const send400 = (res, err) => res.status(400).send(err);
+const send401 = (res, err) => res.status(401).send();
+const send404 = (res, err) => res.status(404).send();
 
 //GET TODOS
 app.get('/todos', (req, res) => {
